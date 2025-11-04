@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Depense;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateDepenseRequest extends FormRequest
 {
@@ -11,18 +12,34 @@ class UpdateDepenseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+    public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            "success" => false,
+            "status_code" => 400,
+            "message" => "Erreur de validation",
+            "errors" => $validator->errors()
+        ]));
+    }
+    
     public function rules(): array
     {
         return [
-            //
+            "description" => ["required", "string"],
+            "montant" => ["required", "numeric"],
+            "date" => ["nullable"],
+        ];
+    }
+
+      public function messages() {
+        return [
+            "description.required" => "La description est requis",
+            "description.string" => "La description doit etre une chaine de caractère",
+            "montant.required" => "Le montant est requis",
+            "montant.numeric" => "Le montant doit etre un entier",
         ];
     }
 }

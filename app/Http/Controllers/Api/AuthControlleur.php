@@ -5,22 +5,18 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User;
 use App\Services\AuthServices;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthControlleur extends Controller
 {
 
     private $authServices;
-    private $user;
 
     public function __construct(AuthServices $authServices)
     {
         $this->authServices = $authServices;
-        $this->user = Auth::user();
     }
 
     public function register(RegisterRequest $request)
