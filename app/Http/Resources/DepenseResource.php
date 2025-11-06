@@ -17,6 +17,7 @@ class DepenseResource extends JsonResource
         return [
             "id" => $this->id,
             "description" => $this->description,
+            "montant" => $this->montant,
             "date" => $this->date,
         ];
     }

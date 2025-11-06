@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Depense\CreateDepenseRequest;
 use App\Http\Requests\Depense\UpdateDepenseRequest;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class DepenseControlleur extends Controller
@@ -20,13 +21,15 @@ class DepenseControlleur extends Controller
         $this->depenseServices = $depenseServices;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        
         try {
+            $page =(int) $request->query("page", default: 1); 
 
             // On tente de recuperer les données en memoire pendant 5 min
-            $depenses = Cache::remember("depense_all", now()->addMinutes(5), function () {
-                return $this->depenseServices->allDepense();
+            $depenses = Cache::remember("depense_all", now()->addMinutes(5), function () use ($page) {
+                return $this->depenseServices->allDepense($page);
             });
 
             // $depenses = $this->depenseServices->allDepense();

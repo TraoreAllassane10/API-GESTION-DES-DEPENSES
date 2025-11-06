@@ -6,9 +6,12 @@ use App\Models\Depense;
 
 class DepenseServices
 {
-    public function allDepense()
+    public function allDepense($page)
     {
-        return Depense::all();
+        $parPage = 10;
+        $offset = ($page - 1) * $parPage;
+
+        return Depense::orderBy("date", "desc")->skip($offset)->take($parPage)->get();
     }
 
     public function createDepense($data)
@@ -52,7 +55,7 @@ class DepenseServices
 
     public function updateDepense($id, $data)
     {
-        
+
         // Recupereration de la depense à modifer
         $depense = $this->findDepense($id);
 
@@ -67,7 +70,8 @@ class DepenseServices
         return $depense;
     }
 
-    public function destroyDepense($id) {
+    public function destroyDepense($id)
+    {
         // Recupereration de la depense à supprimer
         $depense = $this->findDepense($id);
 

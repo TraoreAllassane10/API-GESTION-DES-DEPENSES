@@ -17,7 +17,9 @@ class DepenseFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "description" => $this->faker->sentence(6),
+            "montant" => rand(10000, 1000000),
+            "user_id" => 1
         ];
     }
 }
