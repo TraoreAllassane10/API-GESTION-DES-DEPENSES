@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Depense\CreateDepenseRequest;
 use App\Http\Requests\Depense\UpdateDepenseRequest;
 use Exception;
-
+use Illuminate\Support\Facades\Cache;
 
 class DepenseControlleur extends Controller
 {
@@ -23,7 +23,13 @@ class DepenseControlleur extends Controller
     public function index()
     {
         try {
-            $depenses = $this->depenseServices->allDepense();
+
+            // On tente de recuperer les données en memoire pendant 5 min
+            $depenses = Cache::remember("depense_all", now()->addMinutes(5), function () {
+                return $this->depenseServices->allDepense();
+            });
+
+            // $depenses = $this->depenseServices->allDepense();
 
             return response()->json([
                 "success" => true,
@@ -51,6 +57,9 @@ class DepenseControlleur extends Controller
 
             // Création d'une depense
             $depense = $this->depenseServices->createDepense($data);
+
+            // Nettoyer le cache redis
+            Cache::forget("depense_all");
 
             return response()->json([
                 "success" => true,
@@ -103,6 +112,9 @@ class DepenseControlleur extends Controller
 
             $depense = $this->depenseServices->updateDepense($id, $data);
 
+            // Nettoyer le cache redis
+            Cache::forget("depense_all");
+
             return response()->json([
                 "success" => true,
                 "status_code" => 200,
@@ -126,6 +138,9 @@ class DepenseControlleur extends Controller
     {
         try {
             $this->depenseServices->destroyDepense($id);
+
+            // Nettoyer le cache redis
+            Cache::forget("depense_all");
 
             return response()->json([
                 "success" => true,
