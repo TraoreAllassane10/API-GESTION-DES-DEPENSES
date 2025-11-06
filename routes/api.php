@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\AuthControlleur;
 use App\Http\Controllers\Api\DepenseControlleur;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthControlleur::class)->group(function () {
